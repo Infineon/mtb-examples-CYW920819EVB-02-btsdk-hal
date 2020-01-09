@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, Cypress Semiconductor Corporation or a subsidiary of
+ * Copyright 2020, Cypress Semiconductor Corporation or a subsidiary of
  * Cypress Semiconductor Corporation. All Rights Reserved.
  *
  * This software, including source code, documentation and related
@@ -51,10 +51,10 @@
 
  static void test_puart_driver(void);
 
- /******************************************************************************
+/******************************************************************************
  *                                Function Definitions
  ******************************************************************************/
- /**
+/**
  Function name:
  application_start
 
@@ -68,35 +68,41 @@
 
  @return void
  */
- void application_start(void)
- {
-     wiced_result_t result = WICED_BT_SUCCESS;
+APPLICATION_START ( )
+{
+    wiced_result_t result = WICED_BT_SUCCESS;
 
-     wiced_set_debug_uart(WICED_ROUTE_DEBUG_TO_PUART);
-     wiced_hal_puart_init();
-     wiced_hal_puart_configuration(115200, PARITY_NONE, STOP_BIT_1);
-     WICED_BT_TRACE("*************Starting PUART Application**********\n\r");
+    wiced_set_debug_uart(WICED_ROUTE_DEBUG_TO_PUART);
+#ifdef CYW20706A2
+    wiced_hal_puart_init();
+    // Please see the User Documentation to reference the valid pins.
+    wiced_hal_puart_select_uart_pads( WICED_PUART_RXD, WICED_PUART_TXD, 0, 0);
+#else
+    wiced_hal_puart_configuration(115200, PARITY_NONE, STOP_BIT_1);
+#endif
 
-     /* Register BT stack callback*/
-     result = wiced_bt_stack_init(puart_app_management_cback, NULL, NULL);
-     if(WICED_BT_SUCCESS != result)
-     {
-         WICED_BT_TRACE("Stack Initialization Failed!!\n\r");
-     }
- }
+    WICED_BT_TRACE("*************Starting PUART Application**********\n\r");
 
- /**
-  Function Name:
-  puart_app_management_cback
+    /* Register BT stack callback*/
+    result = wiced_bt_stack_init(puart_app_management_cback, NULL, NULL);
+    if(WICED_BT_SUCCESS != result)
+    {
+        WICED_BT_TRACE("Stack Initialization Failed!!\n\r");
+    }
+}
 
-  Function Description:
-  @brief  Callback function that will be invoked by application_start()
+/**
+ Function Name:
+ puart_app_management_cback
 
-  @param  event           Bluetooth management event type
-  @param  p_event_data    Pointer to the the bluetooth management event data
+ Function Description:
+ @brief  Callback function that will be invoked by application_start()
 
-  @return        status of the callback function
-  */
+ @param  event           Bluetooth management event type
+ @param  p_event_data    Pointer to the the bluetooth management event data
+
+ @return        status of the callback function
+ */
 wiced_result_t
 puart_app_management_cback(wiced_bt_management_evt_t event,
                                   wiced_bt_management_evt_data_t *p_event_data)
@@ -143,8 +149,6 @@ void puart_rx_interrupt_callback(void* unused)
     wiced_hal_puart_reset_puart_interrupt( );
 }
 
-/*
- */
 /**
  Function Name:
  test_puart_driver
@@ -164,7 +168,9 @@ void test_puart_driver( void )
 
     /* BEGIN - puart interrupt */
     wiced_hal_puart_register_interrupt(puart_rx_interrupt_callback);
+#ifndef CYW20706A2
     wiced_hal_puart_set_watermark_level(1);
+#endif
 
     /* Turn on Tx */
     wiced_hal_puart_enable_tx();

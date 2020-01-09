@@ -13,16 +13,12 @@ This document uses CYW20819 as the reference, but the example and instructions i
 - **Associated Parts**: [CYW20819](https://www.cypress.com/datasheet/CYW20819), [CYW20820](https://www.cypress.com/datasheet/CYW20820), [CYW20719](https://www.cypress.com/documentation/datasheets/cyw20719-enhanced-low-power-bredrble-bluetooth-50-soc)
 
 ## Supported Kits
-- [CYW920819EVB-02 Evaluation Kit](http://www.cypress.com/CYW920819EVB-02)
-
-- [CYW920820EVB-02 Evaluation kit](http://www.cypress.com/CYW920820EVB-02)
-
-- [CYW920719B2Q40EVB-01 Evaluation kit](https://community.cypress.com/docs/DOC-17736)
 
 Check the `makefile` file for a detailed list of supported kits.
 
 ## Hardware Setup
 This example uses the kit’s default configuration. Refer to the [kit guide](http://www.cypress.com/CYW920819EVB-02), if required, to ensure the kit is configured correctly.
+Note: if using CYW920721B2EVK-02 kit, remove audio shield board prior to testing this application. The nIRQ signal interferes with puart RX.
 
 ## Using the Code Example
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, Cypress Semiconductor Corporation or a subsidiary of
+ * Copyright 2020, Cypress Semiconductor Corporation or a subsidiary of
  * Cypress Semiconductor Corporation. All Rights Reserved.
  *
  * This software, including source code, documentation and related
@@ -123,12 +123,15 @@ static UINT32 convert_adc_raw_to_mvolt(INT16 raw_val);
 
  @return void
  */
-void application_start(void)
+APPLICATION_START( )
 {
 
 #ifdef WICED_BT_TRACE_ENABLE
     /* Set to PUART to see traces on peripheral uart(puart) */
     wiced_set_debug_uart(WICED_ROUTE_DEBUG_TO_PUART);
+#ifdef CYW20706A2
+    wiced_hal_puart_select_uart_pads( WICED_PUART_RXD, WICED_PUART_TXD, 0, 0);
+#endif
 #endif
     PRINT_N_ASTERISKS(70);
     WICED_BT_TRACE("              ADC Sample Application\r\n");
@@ -253,7 +256,11 @@ static void adc_readings(ADC_INPUT_CHANNEL_SEL channel, char* channel_name)
      * as an argument
      */
     voltage_val = wiced_hal_adc_read_voltage(channel);
+#ifdef CYW20706A2
+    sign_raw_val = wiced_hal_adc_read_raw_sample(channel);
+#else
     sign_raw_val = wiced_hal_adc_read_raw_sample(channel, AVG_NUM_OF_SAMPLES);
+#endif
 #if DEVICE_SUPPORTS_FULL_ADC_API
     conv_val = convert_adc_raw_to_mvolt(sign_raw_val);
 #endif

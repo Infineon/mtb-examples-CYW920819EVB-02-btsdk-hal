@@ -1,35 +1,35 @@
 /*
-* Copyright 2019, Cypress Semiconductor Corporation or a subsidiary of
-* Cypress Semiconductor Corporation. All Rights Reserved.
-*
-* This software, including source code, documentation and related
-* materials ("Software"), is owned by Cypress Semiconductor Corporation
-* or one of its subsidiaries ("Cypress") and is protected by and subject to
-* worldwide patent protection (United States and foreign),
-* United States copyright laws and international treaty provisions.
-* Therefore, you may use this Software only as provided in the license
-* agreement accompanying the software package from which you
-* obtained this Software ("EULA").
-* If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
-* non-transferable license to copy, modify, and compile the Software
-* source code solely for use in connection with Cypress's
-* integrated circuit products. Any reproduction, modification, translation,
-* compilation, or representation of this Software except as specified
-* above is prohibited without the express written permission of Cypress.
-*
-* Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
-* reserves the right to make changes to the Software without notice. Cypress
-* does not assume any liability arising out of the application or use of the
-* Software or any product or circuit described in the Software. Cypress does
-* not authorize its products for use in any products where a malfunction or
-* failure of the Cypress product may reasonably be expected to result in
-* significant property damage, injury or death ("High Risk Product"). By
-* including Cypress's product in a High Risk Product, the manufacturer
-* of such system or application assumes all risk of such use and in doing
-* so agrees to indemnify Cypress against all liability.
-*/
+ * Copyright 2020, Cypress Semiconductor Corporation or a subsidiary of
+ * Cypress Semiconductor Corporation. All Rights Reserved.
+ *
+ * This software, including source code, documentation and related
+ * materials ("Software"), is owned by Cypress Semiconductor Corporation
+ * or one of its subsidiaries ("Cypress") and is protected by and subject to
+ * worldwide patent protection (United States and foreign),
+ * United States copyright laws and international treaty provisions.
+ * Therefore, you may use this Software only as provided in the license
+ * agreement accompanying the software package from which you
+ * obtained this Software ("EULA").
+ * If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
+ * non-transferable license to copy, modify, and compile the Software
+ * source code solely for use in connection with Cypress's
+ * integrated circuit products. Any reproduction, modification, translation,
+ * compilation, or representation of this Software except as specified
+ * above is prohibited without the express written permission of Cypress.
+ *
+ * Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
+ * reserves the right to make changes to the Software without notice. Cypress
+ * does not assume any liability arising out of the application or use of the
+ * Software or any product or circuit described in the Software. Cypress does
+ * not authorize its products for use in any products where a malfunction or
+ * failure of the Cypress product may reasonably be expected to result in
+ * significant property damage, injury or death ("High Risk Product"). By
+ * including Cypress's product in a High Risk Product, the manufacturer
+ * of such system or application assumes all risk of such use and in doing
+ * so agrees to indemnify Cypress against all liability.
+ */
 
 /*
  * File name: low_power_208xx_ble.c
@@ -65,7 +65,7 @@ enum
     SLEEP_WITHOUT_BLE,
     SLEEP_WITH_ADV,
     SLEEP_WITH_CONNECTION,
-    HIBERNATE,
+    HIDOFF,
 }application_state;
 
 #define NOTFICATION_TIME_MS    5000  /* 5 seconds interval for notification if
@@ -94,7 +94,6 @@ uint8_t low_power_208xx_conn_id       = DUMMY;
 /* Notification timer handle */
 wiced_timer_t  low_power_208xx_notification_timer_handle;
 
-extern uint8_t BT_LOCAL_NAME[];
 /*******************************************************************
  * Function Prototypes
  ******************************************************************/
@@ -208,8 +207,8 @@ void low_power_208xx_set_advertisement_data(void)
 
     /* Advertisement Element for Name */
     adv_elem[num_elem].advert_type = BTM_BLE_ADVERT_TYPE_NAME_COMPLETE;
-    adv_elem[num_elem].len = strlen((const char*)BT_LOCAL_NAME);
-    adv_elem[num_elem].p_data = BT_LOCAL_NAME;
+    adv_elem[num_elem].len = app_gap_device_name_len;
+    adv_elem[num_elem].p_data = app_gap_device_name;
     num_elem++;
 
     /* Set Raw Advertisement Data */
@@ -371,11 +370,11 @@ wiced_bt_dev_status_t low_power_208xx_bt_management_callback(wiced_bt_management
         }
         else
         {
-            WICED_BT_TRACE("Connection parameters update failed\r\n");
+            //WICED_BT_TRACE("Connection parameters update failed\r\n");
         }
         break;
     default:
-        WICED_BT_TRACE("Unhandled Bluetooth Management Event: 0x%x (%d)\r\n", event, event);
+        //WICED_BT_TRACE("Unhandled Bluetooth Management Event: 0x%x (%d)\r\n", event, event);
         break;
     }
 
@@ -564,7 +563,11 @@ wiced_bt_gatt_status_t low_power_208xx_gatt_connect_callback(wiced_bt_gatt_conne
             p_conn_status->bd_addr, p_conn_status->conn_id, p_conn_status->reason);
             low_power_208xx_conn_id = DUMMY;
 
-            low_power_208xx_current_state = HIBERNATE;
+            low_power_208xx_current_state = HIDOFF;
+            // stop notification timer if it was turned on to allow device to go to HID off
+            wiced_stop_timer(&low_power_208xx_notification_timer_handle);
+
+            WICED_BT_TRACE("Will go to HID off (if configured)\n");
         }
         status = WICED_BT_GATT_SUCCESS;
     }

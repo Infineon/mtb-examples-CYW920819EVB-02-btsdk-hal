@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, Cypress Semiconductor Corporation or a subsidiary of
+ * Copyright 2020, Cypress Semiconductor Corporation or a subsidiary of
  * Cypress Semiconductor Corporation. All Rights Reserved.
  *
  * This software, including source code, documentation and related
@@ -45,8 +45,8 @@
  *
  * Application Instructions
  *  To demonstrate the app, work through the following steps.
- * 1. Plug the CYW920819EVB-02 evaluation board to your computer.
- * 2. Build and download the application. (See CYW920819EVB-02 User Guide)
+ * 1. Plug the WICED evaluation board to your computer.
+ * 2. Build and download the application. (See Kit User Guide)
  * 3. Use Terminal emulation tools like Teraterm or Putty to view the
  *   trace messages(See Kit User Guide).
  * 4. The user can notice the LED breathing effect on the LEDs
@@ -60,6 +60,13 @@
 #include "wiced_timer.h"
 #include "wiced_bt_trace.h"
 #include "wiced_bt_stack.h"
+#ifdef CYW20706A2
+#include "wiced_hal_puart.h"
+#include "wiced_bt_app_hal_common.h"
+#include "wiced_bt_app_common.h"
+#else
+#include "GeneratedSource/cycfg_pins.h"
+#endif
 
 /******************************************************************************
  *                                Constants
@@ -136,6 +143,21 @@ void pwm_sample_app_init(void)
 {
     pwm_config_t pwm_config;
 
+#ifdef CYW20706A2
+    /* Initialize wiced app */
+    wiced_bt_app_init();
+    wiced_bt_app_led_init();
+
+    /* Configure buttons available on the platform (pin should be configured
+     * before registering interrupt handler )
+     */
+    wiced_hal_gpio_configure_pin(WICED_GPIO_BUTTON,
+                                 WICED_GPIO_BUTTON_SETTINGS( GPIO_EN_INT_RISING_EDGE ),
+                                 WICED_GPIO_BUTTON_DEFAULT_STATE );
+    wiced_hal_gpio_register_pin_for_interrupt(WICED_GPIO_BUTTON,
+                                              pwm_sample_app_button_interrupt_handler,
+                                              NULL );
+#else
     /* Configure buttons available on the platform (pin should be configured
      * before registering interrupt handler )
      */
@@ -143,11 +165,25 @@ void pwm_sample_app_init(void)
                                             pwm_sample_app_button_interrupt_handler,
                                             NULL,
                                             WICED_PLATFORM_BUTTON_RISING_EDGE);
+#endif
 
     /* configure PWM */
     wiced_hal_aclk_enable(PWM_INP_CLK_IN_HZ, ACLK1, ACLK_FREQ_24_MHZ);
 
-    wiced_hal_gpio_select_function(WICED_GPIO_PIN_LED_2, WICED_PWM0);
+#ifndef CYW20706A2
+    if(led_count >= 2)
+    {
+        wiced_hal_gpio_select_function(WICED_GET_PIN_FOR_LED(WICED_PLATFORM_LED_2), WICED_PWM0);
+    }
+    else if(led_count == 1)
+    {
+        wiced_hal_gpio_select_function(WICED_GET_PIN_FOR_LED(WICED_PLATFORM_LED_1), WICED_PWM0);
+    }
+    else
+    {
+        WICED_BT_TRACE("Application must have GPIO configured as LED.\n\r");
+    }
+#endif
 
     wiced_hal_pwm_get_params(PWM_INP_CLK_IN_HZ,
                              PWM_DUTY_CYCLE,
@@ -201,11 +237,14 @@ wiced_result_t app_management_callback(wiced_bt_management_evt_t event,
 /*
  *  Entry point to the application.
  */
-void application_start(void)
+APPLICATION_START( )
 {
 
 #ifdef WICED_BT_TRACE_ENABLE
      wiced_set_debug_uart( WICED_ROUTE_DEBUG_TO_PUART );
+#ifdef CYW20706A2
+     wiced_hal_puart_select_uart_pads( WICED_PUART_RXD, WICED_PUART_TXD, 0, 0);
+#endif
 #endif
 
      WICED_BT_TRACE( "\n--------------------------------------------------------- \n"

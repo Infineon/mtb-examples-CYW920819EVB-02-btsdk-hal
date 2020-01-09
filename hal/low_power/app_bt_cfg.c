@@ -1,5 +1,5 @@
 /*
-* Copyright 2019, Cypress Semiconductor Corporation or a subsidiary of
+* Copyright 2020, Cypress Semiconductor Corporation or a subsidiary of
 * Cypress Semiconductor Corporation. All Rights Reserved.
 *
 * This software, including source code, documentation and related
@@ -52,11 +52,11 @@ const uint16_t BT_LOCAL_NAME_CAPACITY = sizeof(BT_LOCAL_NAME);
  ****************************************************************************/
 const wiced_bt_cfg_settings_t wiced_bt_cfg_settings =
 {
-    .device_name                         = (uint8_t*)BT_LOCAL_NAME,                                              /**< Local device name (NULL terminated) */
-    .device_class                        = {0x00, 0x00, 0x00},                                             /**< Local device class */
-    .security_requirement_mask           = BTM_SEC_NONE,                                                   /**< Security requirements mask (BTM_SEC_NONE, or combinination of BTM_SEC_IN_AUTHENTICATE, BTM_SEC_OUT_AUTHENTICATE, BTM_SEC_ENCRYPT (see #wiced_bt_sec_level_e)) */
+    .device_name                         = (uint8_t*)BT_LOCAL_NAME,                                    /**< Local device name (NULL terminated) */
+    .device_class                        = {0x00, 0x00, 0x00},                                         /**< Local device class */
+    .security_requirement_mask           = BTM_SEC_NONE,                                               /**< Security requirements mask (BTM_SEC_NONE, or combinination of BTM_SEC_IN_AUTHENTICATE, BTM_SEC_OUT_AUTHENTICATE, BTM_SEC_ENCRYPT (see #wiced_bt_sec_level_e)) */
 
-    .max_simultaneous_links              = 3,                                                              /**< Maximum number simultaneous links to different devices */
+    .max_simultaneous_links              = 3,                                                          /**< Maximum number simultaneous links to different devices */
 
     .br_edr_scan_cfg =                                              /* BR/EDR scan config */
     {
@@ -108,9 +108,9 @@ const wiced_bt_cfg_settings_t wiced_bt_cfg_settings =
         .high_duty_max_interval          = WICED_BT_CFG_DEFAULT_HIGH_DUTY_ADV_MAX_INTERVAL,            /**< High duty undirected connectable maximum advertising interval */
         .high_duty_duration              = 30,                                                         /**< High duty undirected connectable advertising duration in seconds (0 for infinite) */
 
-        .low_duty_min_interval           = WICED_BT_CFG_DEFAULT_LOW_DUTY_ADV_MIN_INTERVAL,                                                       /**< Low duty undirected connectable minimum advertising interval */
-        .low_duty_max_interval           = WICED_BT_CFG_DEFAULT_LOW_DUTY_ADV_MAX_INTERVAL,                                                       /**< Low duty undirected connectable maximum advertising interval */
-        .low_duty_duration               = 0,                                                         /**< Low duty undirected connectable advertising duration in seconds (0 for infinite) */
+        .low_duty_min_interval           = WICED_BT_CFG_DEFAULT_LOW_DUTY_ADV_MIN_INTERVAL,             /**< Low duty undirected connectable minimum advertising interval */
+        .low_duty_max_interval           = WICED_BT_CFG_DEFAULT_LOW_DUTY_ADV_MAX_INTERVAL,             /**< Low duty undirected connectable maximum advertising interval */
+        .low_duty_duration               = 0,                                                          /**< Low duty undirected connectable advertising duration in seconds (0 for infinite) */
 
         .high_duty_directed_min_interval = WICED_BT_CFG_DEFAULT_HIGH_DUTY_DIRECTED_ADV_MIN_INTERVAL,   /**< High duty directed connectable minimum advertising interval */
         .high_duty_directed_max_interval = WICED_BT_CFG_DEFAULT_HIGH_DUTY_DIRECTED_ADV_MAX_INTERVAL,   /**< High duty directed connectable maximum advertising interval */
@@ -130,65 +130,74 @@ const wiced_bt_cfg_settings_t wiced_bt_cfg_settings =
 
     .gatt_cfg =                                                     /* GATT configuration */
     {
-        .appearance                     = APPEARANCE_GENERIC_TAG,                                     /**< GATT appearance (see gatt_appearance_e) */
-        .client_max_links               = 0,                                                          /**< Client config: maximum number of servers that local client can connect to  */
-        .server_max_links               = 1,                                                          /**< Server config: maximum number of remote clients connections allowed by the local */
-        .max_attr_len                   = 512,                                                       /**< Maximum attribute length; gki_cfg must have a corresponding buffer pool that can hold this length */
-        .max_mtu_size                   = 515                                                         /**< Maximum MTU size for GATT connections, should be between 23 and (max_attr_len + 5) */
+        .appearance                     = APPEARANCE_GENERIC_TAG,                                      /**< GATT appearance (see gatt_appearance_e) */
+        .client_max_links               = 0,                                                           /**< Client config: maximum number of servers that local client can connect to  */
+        .server_max_links               = 1,                                                           /**< Server config: maximum number of remote clients connections allowed by the local */
+        .max_attr_len                   = 512,                                                          /**< Maximum attribute length; gki_cfg must have a corresponding buffer pool that can hold this length */
+#if !defined(CYW20706A2)
+        .max_mtu_size                   = 517                                                           /**< Maximum MTU size for GATT connections, should be between 23 and (max_attr_len + 5) */
+#endif
     },
 
     .rfcomm_cfg =                                                   /* RFCOMM configuration */
     {
-        .max_links                      = 0,                                                          /**< Maximum number of simultaneous connected remote devices*/
-        .max_ports                      = 0                                                           /**< Maximum number of simultaneous RFCOMM ports */
+        .max_links                      = 0,                                                           /**< Maximum number of simultaneous connected remote devices*/
+        .max_ports                      = 0                                                            /**< Maximum number of simultaneous RFCOMM ports */
     },
 
     .l2cap_application =                                            /* Application managed l2cap protocol configuration */
     {
-        .max_links                      = 0,                                                          /**< Maximum number of application-managed l2cap links (BR/EDR and LE) */
+        .max_links                      = 0,                                                           /**< Maximum number of application-managed l2cap links (BR/EDR and LE) */
 
         /* BR EDR l2cap configuration */
-        .max_psm                        = 0,                                                          /**< Maximum number of application-managed BR/EDR PSMs */
-        .max_channels                   = 0,                                                          /**< Maximum number of application-managed BR/EDR channels  */
+        .max_psm                        = 0,                                                           /**< Maximum number of application-managed BR/EDR PSMs */
+        .max_channels                   = 0,                                                           /**< Maximum number of application-managed BR/EDR channels  */
 
         /* LE L2cap connection-oriented channels configuration */
-        .max_le_psm                     = 0,                                                          /**< Maximum number of application-managed LE PSMs */
-        .max_le_channels                = 0,                                                          /**< Maximum number of application-managed LE channels */
-
+        .max_le_psm                     = 0,                                                           /**< Maximum number of application-managed LE PSMs */
+        .max_le_channels                = 0,                                                           /**< Maximum number of application-managed LE channels */
+#if !defined(CYW20706A2)
         /* LE L2cap fixed channel configuration */
-        .max_le_l2cap_fixed_channels    = 0                                                           /**< Maximum number of application managed fixed channels supported (in addition to mandatory channels 4, 5 and 6). > */
-
+        .max_le_l2cap_fixed_channels    = 0                                                            /**< Maximum number of application managed fixed channels supported (in addition to mandatory channels 4, 5 and 6). > */
+#endif
     },
 
     .avdt_cfg =
     /* Audio/Video Distribution configuration */
     {
-        .max_links                      = 0,                                                          /**< Maximum simultaneous audio/video links */
-        .max_seps                       = 0                                                           /**< Maximum number of stream end points */
-
+        .max_links                      = 0,                                                           /**< Maximum simultaneous audio/video links */
+#if !defined(CYW20706A2)
+        .max_seps                       = 0                                                            /**< Maximum number of stream end points */
+#endif
     },
 
     .avrc_cfg =                                                     /* Audio/Video Remote Control configuration */
     {
-        .roles                          = 0,                                                          /**< Mask of local roles supported (AVRC_CONN_INITIATOR|AVRC_CONN_ACCEPTOR) */
-        .max_links                      = 0                                                           /**< Maximum simultaneous remote control links */
+        .roles                          = 0,                                                           /**< Mask of local roles supported (AVRC_CONN_INITIATOR|AVRC_CONN_ACCEPTOR) */
+        .max_links                      = 0                                                            /**< Maximum simultaneous remote control links */
     },
 
     /* LE Address Resolution DB size  */
-    .addr_resolution_db_size            = 5,                                                          /**< LE Address Resolution DB settings - effective only for pre 4.2 controller*/
+    .addr_resolution_db_size            = 5,                                                           /**< LE Address Resolution DB settings - effective only for pre 4.2 controller*/
 
-    .max_number_of_buffer_pools         = 4,                                                              /**< Maximum number of buffer pools in p_btm_cfg_buf_pools and by wiced_create_pool */
+#ifdef CYW20706A2
+    .max_mtu_size                       = 517,                                                         /**< Maximum MTU size for GATT connections, should be between 23 and (max_attr_len + 5) */
+    .max_pwr_db_val                     = 12                                                           /**< Max. power level of the device */
+#else
+    /* Maximum number of buffer pools */
+    .max_number_of_buffer_pools         = 4,                                                           /**< Maximum number of buffer pools in p_btm_cfg_buf_pools and by wiced_create_pool */
 
     /* Interval of  random address refreshing */
-    .rpa_refresh_timeout                = WICED_BT_CFG_DEFAULT_RANDOM_ADDRESS_NEVER_CHANGE,             /**< Interval of  random address refreshing - secs */
+    .rpa_refresh_timeout                = WICED_BT_CFG_DEFAULT_RANDOM_ADDRESS_NEVER_CHANGE,          /**< Interval of  random address refreshing - secs */
     /* BLE white list size */
-    .ble_white_list_size                = 0,                                                               /**< Maximum number of white list devices allowed. Cannot be more than 128 */
-                                                          /**< Maximum number of white list devices allowed. Cannot be more than 128 */
-    .default_ble_power_level            = 12                                                             /**< Default LE power level, Refer lm_TxPwrTable table for the power range */
+    .ble_white_list_size                = 0,                                                           /**< Maximum number of white list devices allowed. Cannot be more than 128 */
+#endif
 
+#if defined(CYW20719B2) || defined(CYW20721B2) || defined(CYW20819A1) || defined (CYW20820A1)
+    .default_ble_power_level            = 12                                                           /**< Default LE power level, Refer lm_TxPwrTable table for the power range */
+#endif
 };
 
-/* TODO set the application buffer pool as per your use case */
 /*****************************************************************************
  * wiced_bt_stack buffer pool configuration
  *

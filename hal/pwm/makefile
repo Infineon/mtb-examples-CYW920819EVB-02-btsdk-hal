@@ -1,5 +1,5 @@
 #
-# Copyright 2019, Cypress Semiconductor Corporation or a subsidiary of
+# Copyright 2020, Cypress Semiconductor Corporation or a subsidiary of
 # Cypress Semiconductor Corporation. All Rights Reserved.
 #
 # This software, including source code, documentation and related
@@ -50,13 +50,15 @@ SUPPORTED_TARGETS = \
   CYW920819EVB-02 \
   CYW920820EVB-02 \
   CYBT-213043-EVAL \
-  CYW989820EVB-01
+  CYW989820EVB-01 \
+  CYW920706WCDEVAL
 
 TARGET_DEVICE_MAP = \
   CYW920819EVB-02/20819A1 \
   CYW920820EVB-02/20820A1 \
   CYBT-213043-EVAL/20819A1 \
-  CYW989820EVB-01/20820A1
+  CYW989820EVB-01/20820A1 \
+  CYW920706WCDEVAL/20706A2
 
 CY_TARGET_DEVICE = $(patsubst $(TARGET)/%,%,$(filter $(TARGET)%,$(TARGET_DEVICE_MAP)))
 
@@ -96,7 +98,7 @@ BT_DEVICE_ADDRESS?=default
 UART?=AUTO
 XIP?=xip
 TRANSPORT?=UART
-ENABLE_DEBUG?=0
+export ENABLE_DEBUG?=0
 
 # wait for SWD attach
 ifeq ($(ENABLE_DEBUG),1)

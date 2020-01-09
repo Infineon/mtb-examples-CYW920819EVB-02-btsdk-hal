@@ -1,60 +1,34 @@
 /*
-* Copyright 2019, Cypress Semiconductor Corporation or a subsidiary of
-* Cypress Semiconductor Corporation. All Rights Reserved.
-*
-* This software, including source code, documentation and related
-* materials ("Software"), is owned by Cypress Semiconductor Corporation
-* or one of its subsidiaries ("Cypress") and is protected by and subject to
-* worldwide patent protection (United States and foreign),
-* United States copyright laws and international treaty provisions.
-* Therefore, you may use this Software only as provided in the license
-* agreement accompanying the software package from which you
-* obtained this Software ("EULA").
-* If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
-* non-transferable license to copy, modify, and compile the Software
-* source code solely for use in connection with Cypress's
-* integrated circuit products. Any reproduction, modification, translation,
-* compilation, or representation of this Software except as specified
-* above is prohibited without the express written permission of Cypress.
-*
-* Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
-* reserves the right to make changes to the Software without notice. Cypress
-* does not assume any liability arising out of the application or use of the
-* Software or any product or circuit described in the Software. Cypress does
-* not authorize its products for use in any products where a malfunction or
-* failure of the Cypress product may reasonably be expected to result in
-* significant property damage, injury or death ("High Risk Product"). By
-* including Cypress's product in a High Risk Product, the manufacturer
-* of such system or application assumes all risk of such use and in doing
-* so agrees to indemnify Cypress against all liability.
-*/
-
-/*
- * File name: low_power_208xx.c
+ * Copyright 2020, Cypress Semiconductor Corporation or a subsidiary of
+ * Cypress Semiconductor Corporation. All Rights Reserved.
  *
- * Description: Main file which is the entry point to the application.
- *              The application_start function initializes UART for trace
- *              messages, initializes the BT stack and configures sleep
- *              parameters. The low_power_sleep_handler function handles the
- *              sleep related callbacks from the PMU.
- *              Refer to the CE document CE225540_CYW208xx_Low_Power.pdf
- *              provided along with the code example for more details.
+ * This software, including source code, documentation and related
+ * materials ("Software"), is owned by Cypress Semiconductor Corporation
+ * or one of its subsidiaries ("Cypress") and is protected by and subject to
+ * worldwide patent protection (United States and foreign),
+ * United States copyright laws and international treaty provisions.
+ * Therefore, you may use this Software only as provided in the license
+ * agreement accompanying the software package from which you
+ * obtained this Software ("EULA").
+ * If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
+ * non-transferable license to copy, modify, and compile the Software
+ * source code solely for use in connection with Cypress's
+ * integrated circuit products. Any reproduction, modification, translation,
+ * compilation, or representation of this Software except as specified
+ * above is prohibited without the express written permission of Cypress.
  *
- * Features demonstrated:
- *              ePDS and HID-Off functionality with BLE advertisements (ADV) and
- *              connection.
- *
- *
- *  Controls:
- *  - Start ADV with button press when not connected.
- *  - Disconnect and enter HID-Off with button press when connected.
- *  - Wake from HID-Off on button press.
- *
- *  Note: Do not connect HCI UART when running this application as it will
- *  prevent the device from entering sleep as we have configured sleep mode as
- *  WICED_SLEEP_MODE_NO_TRANSPORT (see header file wiced_sleep.h)
+ * Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Cypress
+ * reserves the right to make changes to the Software without notice. Cypress
+ * does not assume any liability arising out of the application or use of the
+ * Software or any product or circuit described in the Software. Cypress does
+ * not authorize its products for use in any products where a malfunction or
+ * failure of the Cypress product may reasonably be expected to result in
+ * significant property damage, injury or death ("High Risk Product"). By
+ * including Cypress's product in a High Risk Product, the manufacturer
+ * of such system or application assumes all risk of such use and in doing
+ * so agrees to indemnify Cypress against all liability.
  */
 
 #include "wiced.h"
@@ -81,7 +55,7 @@ enum
     SLEEP_WITHOUT_BLE,
     SLEEP_WITH_ADV,
     SLEEP_WITH_CONNECTION,
-    HIBERNATE,
+    HIDOFF,
 }application_state;
 
 /*******************************************************************
@@ -131,7 +105,7 @@ extern wiced_bt_dev_status_t  low_power_208xx_bt_management_callback(
 *******************************************************************************/
 void application_start(void)
 {
-    /* Following line of code is required to enable Hibernate */
+    /* Following line of code is required to enable HIDOFF */
     g_foundation_config_PMUflags |= PMU_CONFIG_FLAGS_ENABLE_SDS;
 
     wiced_sleep_wake_reason_t wake_reason = 0;
@@ -157,16 +131,13 @@ void application_start(void)
     {
         WICED_BT_TRACE("Reset due to timed wake from HID-Off\n");
     }
+    else if(WICED_SLEEP_WAKE_REASON_HIDOFF_GPIO == wake_reason)
+    {
+        WICED_BT_TRACE("Reset due to GPIO wake from HID-Off\n");
+    }
     else
     {
-        if(wiced_hal_gpio_get_pin_interrupt_status(WICED_GET_PIN_FOR_BUTTON(WICED_PLATFORM_BUTTON_1)))
-        {
-            WICED_BT_TRACE("Reset due to GPIO wake from HID-Off\n");
-        }
-        else
-        {
-            WICED_BT_TRACE("Reset due to other reasons\n");
-        }
+      WICED_BT_TRACE("Reset due to other reasons\n");
     }
 
     /* Initialize Bluetooth Controller and Host Stack */
@@ -213,17 +184,19 @@ uint32_t low_power_sleep_handler(wiced_sleep_poll_type_t type)
     switch(type)
     {
         case WICED_SLEEP_POLL_SLEEP_PERMISSION:
-            if(HIBERNATE == low_power_208xx_current_state)
+            if(HIDOFF == low_power_208xx_current_state)
             {
+                /* This allows the device to enter HID-Off */
                 ret = WICED_SLEEP_ALLOWED_WITH_SHUTDOWN;
             }
             else
             {
+                /* This allows the device to enter ePDS */
                 ret = WICED_SLEEP_ALLOWED_WITHOUT_SHUTDOWN;
             }
             break;
         case WICED_SLEEP_POLL_TIME_TO_SLEEP:
-            if(HIBERNATE == low_power_208xx_current_state)
+            if(HIDOFF == low_power_208xx_current_state)
             {
                 ret = HIDOFF_SLEEP_TIME;
             }

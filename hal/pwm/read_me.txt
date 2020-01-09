@@ -17,8 +17,8 @@
  *                                Instructions
  ******************************************************************************/
  To demonstrate the app, work through the following steps.
- 1. Plug the CYW920819EVB-02 evaluation board to your computer.
- 2. Build and download the application. (See CYW920819EVB-02 User Guide)
+ 1. Plug the WICED evaluation board to your computer.
+ 2. Build and download the application.
  3. Use Terminal emulation tools like Teraterm or Putty to view the
     trace messages(See Kit User Guide).
  4. The user can notice the LED breathing effect on the LEDs.

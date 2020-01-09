@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, Cypress Semiconductor Corporation or a subsidiary of
+ * Copyright 2020, Cypress Semiconductor Corporation or a subsidiary of
  * Cypress Semiconductor Corporation. All Rights Reserved.
  *
  * This software, including source code, documentation and related
@@ -54,7 +54,7 @@
  * 3. Use Terminal emulation tools like Teraterm or Putty to view the trace messages(See Kit User Guide).
  *
  */
-
+#ifndef CYW20706A2
 #include "sparcommon.h"
 #include "wiced_bt_dev.h"
 
@@ -229,3 +229,4 @@ void hal_gpio_app_interrrupt_handler(void *data, uint8_t pin)
     // clear the interrupt status
     wiced_hal_gpio_clear_pin_interrupt_status(pin);
 }
+#endif

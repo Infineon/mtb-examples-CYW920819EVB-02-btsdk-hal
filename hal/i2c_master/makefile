@@ -1,5 +1,5 @@
 #
-# Copyright 2019, Cypress Semiconductor Corporation or a subsidiary of
+# Copyright 2020, Cypress Semiconductor Corporation or a subsidiary of
 # Cypress Semiconductor Corporation. All Rights Reserved.
 #
 # This software, including source code, documentation and related
@@ -92,7 +92,7 @@ BT_DEVICE_ADDRESS?=default
 UART?=AUTO
 XIP?=xip
 TRANSPORT?=UART
-ENABLE_DEBUG?=0
+export ENABLE_DEBUG?=0
 
 # wait for SWD attach
 ifeq ($(ENABLE_DEBUG),1)

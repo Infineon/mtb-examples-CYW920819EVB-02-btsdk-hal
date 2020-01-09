@@ -6,13 +6,14 @@ This example demonstrates low power modes on CYW20819, CYW20820 and CYW89820 usi
 ### Requirements
 
 [ModusToolbox™ IDE](https://www.cypress.com/products/modustoolbox-software-environment) v 2.0
+
 Programming Language: C
 
 Associated Parts: [CYW20819](https://www.cypress.com/datasheet/CYW20819), [CYW20820](https://www.cypress.com/datasheet/CYW20820)
 
 ### Supported Kits
 * [CYW920819EVB-02 Evaluation Kit](http://www.cypress.com/CYW920819EVB-02)
-* [CYW920820EVB-02 Evaluation kit](http://www.cypress.com/CYW920820EVB-02)
+* [CYW920820EVB-02 Evaluation kit](http://www.cypress.com/CYW920820EVB-02)<br/>
 
 Simply pick the supported kit in the IDE's New Application wizard. When you select a supported kit in the new application wizard the example is reconfigured automatically to work with the kit.
 
@@ -134,7 +135,7 @@ The application code and the Bluetooth stack runs on the Arm® Cortex®-M4 core 
 Table 1. Code Example File Structure
 |**File Name**|**Comments**|
 |-------------|------------|
-|low_power_20819.c|Contains the application_start() function, which is the entry point for execution of the user application code after device startup. It also has the sleep callback function used by the PMU. The function to enter HID-Off is also in this file. The contents in this file can be referenced to implement low-power modes in other applications.|
+|low_power_20819.c|Contains the application_start() function, which is the entry point for execution of the user application code after device startup. It also has the sleep callback function used by the PMU. The contents in this file can be referenced to implement low-power modes in other applications.|
 |app_bt_cfg.c, app_bt_cfg.h|These files contain the runtime Bluetooth stack configuration parameters such as device name and advertisement/connection settings.|
 |cycfg_bt.h, cycfg_gatt_db.c, cycfg_gatt_db.h|These files reside in the GeneratedSource folder under the application folder. They contain the GATT database information generated using the Bluetooth Configurator tool.|
 |low_power_20819_ble.c|This file contains the Bluetooth events callback function along with other functions to service Bluetooth events. It also contains the button callback function.|
