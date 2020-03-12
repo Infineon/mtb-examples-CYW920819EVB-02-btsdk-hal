@@ -102,12 +102,36 @@ void pwm_sample_app_button_interrupt_handler(void* data, uint8_t pin)
     if (pwm_running)
     {
         WICED_BT_TRACE("Stopping PWM... \n\r");
+#ifndef CYW20706A2
+        if(led_count >= 2)
+        {
+            wiced_hal_gpio_select_function(WICED_GET_PIN_FOR_LED(WICED_PLATFORM_LED_2), WICED_GPIO);
+        }
+        else if(led_count == 1)
+        {
+            wiced_hal_gpio_select_function(WICED_GET_PIN_FOR_LED(WICED_PLATFORM_LED_1), WICED_GPIO);
+        }
+#endif
         wiced_hal_pwm_disable(PWM_CHANNEL);
         pwm_running = WICED_FALSE;
     }
     else
     {
         WICED_BT_TRACE("Starting PWM... \n\r");
+#ifndef CYW20706A2
+        if(led_count >= 2)
+        {
+            wiced_hal_gpio_select_function(WICED_GET_PIN_FOR_LED(WICED_PLATFORM_LED_2), WICED_PWM0);
+        }
+        else if(led_count == 1)
+        {
+            wiced_hal_gpio_select_function(WICED_GET_PIN_FOR_LED(WICED_PLATFORM_LED_1), WICED_PWM0);
+        }
+        else
+        {
+            WICED_BT_TRACE("Application must have GPIO configured as LED.\n\r");
+        }
+#endif
         wiced_hal_pwm_enable(PWM_CHANNEL);
         pwm_running = WICED_TRUE;
     }

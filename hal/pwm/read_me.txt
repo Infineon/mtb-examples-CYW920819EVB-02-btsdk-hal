@@ -24,5 +24,3 @@
  4. The user can notice the LED breathing effect on the LEDs.
  5. On pressing user button, the application toggles between starting and
     stopping PWM.
- 6. When stopping the PWM, the application stays in the last duty cycle and
-    retains the same illumination level in the LED.

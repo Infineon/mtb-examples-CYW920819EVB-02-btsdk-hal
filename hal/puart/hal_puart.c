@@ -77,9 +77,12 @@ APPLICATION_START ( )
     wiced_hal_puart_init();
     // Please see the User Documentation to reference the valid pins.
     wiced_hal_puart_select_uart_pads( WICED_PUART_RXD, WICED_PUART_TXD, 0, 0);
+#elif CYW20735B1
+    wiced_hal_puart_set_baudrate(115200);
 #else
     wiced_hal_puart_configuration(115200, PARITY_NONE, STOP_BIT_1);
 #endif
+
 
     WICED_BT_TRACE("*************Starting PUART Application**********\n\r");
 
