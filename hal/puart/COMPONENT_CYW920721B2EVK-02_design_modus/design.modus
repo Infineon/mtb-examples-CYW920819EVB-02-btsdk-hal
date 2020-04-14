@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Design version="12" xmlns="http://cypress.com/xsd/cydesignfile_v3">
-    <ToolInfo version="1.0.0"/>
+    <ToolInfo version="2.1.0.1266"/>
     <Devices>
         <Device mpn="CYW20721B2KWB9G">
             <BlockConfig>
@@ -95,15 +95,6 @@
                         <Param id="InterruptTrigger" value="GPIO_EN_INT_RISING_EDGE"/>
                     </Personality>
                 </Block>
-                <Block location="ioss[0].pin[17]">
-                    <Alias value="SECI_OUT"/>
-                </Block>
-                <Block location="ioss[0].pin[18]">
-                    <Alias value="SECI_IN"/>
-                </Block>
-                <Block location="ioss[0].pin[1]">
-                    <Alias value="ARD_RST"/>
-                </Block>
                 <Block location="ioss[0].pin[26]">
                     <Alias value="LED2"/>
                     <Personality template="20x19_pin" version="1.0">
@@ -128,15 +119,6 @@
                         <Param id="InterruptTrigger" value="GPIO_EN_INT_RISING_EDGE"/>
                     </Personality>
                 </Block>
-                <Block location="ioss[0].pin[28]">
-                    <Alias value="LED4"/>
-                </Block>
-                <Block location="ioss[0].pin[29]">
-                    <Alias value="LED3"/>
-                </Block>
-                <Block location="ioss[0].pin[2]">
-                    <Alias value="SWDCK"/>
-                </Block>
                 <Block location="ioss[0].pin[30]">
                     <Alias value="SPI_MOSI"/>
                     <Personality template="20x19_pin" version="1.0">
@@ -148,9 +130,6 @@
                         <Param id="InterruptEnable" value="false"/>
                         <Param id="InterruptTrigger" value="GPIO_EN_INT_RISING_EDGE"/>
                     </Personality>
-                </Block>
-                <Block location="ioss[0].pin[31]">
-                    <Alias value="STATUS"/>
                 </Block>
                 <Block location="ioss[0].pin[32]">
                     <Alias value="PUART_TX"/>
@@ -223,12 +202,6 @@
                         <Param id="InterruptEnable" value="false"/>
                         <Param id="InterruptTrigger" value="GPIO_EN_INT_RISING_EDGE"/>
                     </Personality>
-                </Block>
-                <Block location="ioss[0].pin[38]">
-                    <Alias value="IR_TX"/>
-                </Block>
-                <Block location="ioss[0].pin[3]">
-                    <Alias value="SWDIO"/>
                 </Block>
                 <Block location="ioss[0].pin[4]">
                     <Alias value="BUTTON_VOL_DN"/>
@@ -359,8 +332,5 @@
             </Netlist>
         </Device>
     </Devices>
-    <Libraries>
-        <Library name="bt_sdk" version="1.1"/>
-    </Libraries>
     <ConfiguratorData/>
 </Design>
