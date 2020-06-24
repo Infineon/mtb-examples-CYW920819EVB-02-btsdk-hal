@@ -25,6 +25,10 @@ To demonstrate the snip, work through the following steps.
    (See Kit User Guide).
 -------------------------------------------------------------------------------
 
-Note:   Some kits such as CYW920721B2EVK-03 do not allocate pins for LED used by this application.
-        To free up pins for LED testing, use the device-configurator to uncheck and disable
-        the I2S interface, then configure P28 as the GPIO to use for LED1.
+Additional Notes:
+-----------------
+ - The default configuration for the CYW920721B2EVK-03 platform has no GPIO
+   assigned for LED1. To use this application with LED output, an application-specific
+   design.modus is used to free GPIO P28 from the I2S interface and configure
+   it as an LED with index = 1, output, default=High.
+-------------------------------------------------------------------------------

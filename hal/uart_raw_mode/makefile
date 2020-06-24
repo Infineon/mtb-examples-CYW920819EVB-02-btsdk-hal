@@ -38,37 +38,24 @@ endif
 #
 # Basic Configuration
 #
-APPNAME=HAL_GPIO
+APPNAME=HAL_UARTRawMode
 TOOLCHAIN=GCC_ARM
 CONFIG=Debug
 VERBOSE=
 
 # default target
 TARGET=CYW920819EVB-02
-
 SUPPORTED_TARGETS = \
   CYW920819EVB-02 \
   CYW920820EVB-02 \
-  CYBT-213043-EVAL \
-  CYW989820EVB-01 \
-  CYW920721B2EVK-03 \
   CYW920721B2EVK-02 \
-  CYW920719B2Q40EVB-01 \
-  CYW920706WCDEVAL \
-  CYBT-343026-EVAL \
-  CYW920735Q60EVB-01
+  CYW920719B2Q40EVB-01
 
 TARGET_DEVICE_MAP = \
   CYW920819EVB-02/20819A1 \
   CYW920820EVB-02/20820A1 \
-  CYBT-213043-EVAL/20819A1 \
-  CYW989820EVB-01/20820A1 \
-  CYW920721B2EVK-03/20721B2 \
   CYW920721B2EVK-02/20721B2 \
-  CYW920719B2Q40EVB-01/20719B2 \
-  CYW920706WCDEVAL/20706A2 \
-  CYBT-343026-EVAL/20706A2 \
-  CYW920735Q60EVB-01/20735B1
+  CYW920719B2Q40EVB-01/20719B2
 
 CY_TARGET_DEVICE = $(patsubst $(TARGET)/%,%,$(filter $(TARGET)%,$(TARGET_DEVICE_MAP)))
 
@@ -122,11 +109,11 @@ CY_APP_DEFINES+=\
 # Components (middleware libraries)
 #
 COMPONENTS +=bsp_design_modus
-ifeq ($(TARGET),CYW920721B2EVK-03)
-# use app specific design.modus
-DISABLE_COMPONENTS+=bsp_design_modus
-COMPONENTS+=CYW920721B2EVK-03_design_modus
-endif
+
+#
+# App Patch libs
+#
+CY_APP_PATCH_LIBS += wiced_uart_raw_mode_lib.a
 
 ################################################################################
 # Paths
@@ -178,6 +165,9 @@ endif
 
 # path to WICED tools root folder
 CY_WICED_TOOLS_ROOT?=$(CY_SHARED_PATH)/dev-kit/btsdk-tools
+
+# tools that can be launched with "make open CY_OPEN_TYPE=<tool>
+CY_BT_APP_TOOLS=BTSpy ClientControl
 
 # getlibs path
 CY_GETLIBS_PATH=.
