@@ -2,7 +2,7 @@
 <Design version="12" xmlns="http://cypress.com/xsd/cydesignfile_v3">
     <ToolInfo version="2.1.0.1266"/>
     <Devices>
-        <Device mpn="CYW20721B2KWB9G">
+        <Device mpn="LBCA1KU1WA">
             <BlockConfig>
                 <Block location="adc[0]">
                     <Personality template="20x19_adc" version="1.0">
